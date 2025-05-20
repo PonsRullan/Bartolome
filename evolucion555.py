@@ -296,13 +296,13 @@ def neuralD(depredador):
                 utilizadasD = min(utilizadas, len(history.history['val_loss']))
             
             #Plot del historial de pérdida
-            #plt.plot(history.history['loss'], label='train_loss')
-            #plt.plot(history.history['val_loss'], label='val_loss')
-            #plt.xlabel('Épocas')
-            #plt.ylabel('Loss')
-            #plt.legend()
-            #plt.title('Training Loss y Validation Loss' + str(depredador[0]))
-            #plt.show()
+            plt.plot(history.history['loss'], 'o-', color='black', linewidth=2, label='training')      # puntos + línea negra
+            plt.plot(history.history['val_loss'], '-', color='black', linewidth=2, label='validation') # línea negra
+            plt.xlabel('epochs')
+            plt.ylabel('loss')
+            plt.legend()
+            plt.title('Training & Validation Loss')
+            plt.show()
             
             # Podar pesos y sesgos 
             pruned_weights = prune(modeloD, threshold=0.1)
@@ -628,7 +628,7 @@ def mutacion (atributos, numprocesadores):
 # preparar datos para las graficas
 def lista_a_diccionario(datos):
     
-    etiquetas = ['generacion', 'identificador', 'eventos_caza', 'alimentacion', 'eventos_reproductivos', 'edad', 'atributos', 'entrenamientos', 'modularidad', 'procesadores', 'tiempo_proceso', 'mejora_con_el_tiempo','empeora_con_el_tiempo','mejora_con_el_ejercicio','empeora_con_el_ejercicio','mejora_con_el_exito','empeora_con_el_exito','mejora_con_la_alimentacion','empeora_con_la_alimentacion','mejora_con_la_edad_y_la_alimentacion','empeora_con_la edad_y_la_alimentacion','mejora_con_la_edad_y_menos_alimentacion','empeora_con_la_edad_y_menos_alimentacion','mejora_con_la_actividad_reproductora','empeora_con_la_actividad_reproductora','mejora_con_el_numero_de_intereses','empeora_con_el_numero_de_intereses']
+    etiquetas = ['generacion', 'identificador', 'eventos_caza', 'alimentacion', 'eventos_reproductivos', 'edad', 'atributos', 'entrenamientos', 'modularidad', 'procesadores', 'tiempo_proceso', 'improve_with_el_tiempo','worsens_with_el_tiempo','improve_with_el_ejercicio','worsens_with_el_ejercicio','improve_with_el_exito','worsens_with_el_exito','improve_with_la_alimentacion','worsens_with_la_alimentacion','improve_with_la_edad_y_la_alimentacion','worsens_with_la edad_y_la_alimentacion','improve_with_la_edad_y_menos_alimentacion','worsens_with_la_edad_y_menos_alimentacion','improve_with_la_actividad_reproductora','worsens_with_la_actividad_reproductora','improve_with_el_numero_de_intereses','worsens_with_el_numero_de_intereses']
     diccionario = {}
 
     for i, etiqueta in enumerate(etiquetas):
@@ -676,10 +676,6 @@ def dibujarcaza(depredadores, presas, generacion, tiempo):
             color = (1, 0, 0)  # Rojo para depredadores
             plt.scatter(x, y, s=tamano, c=[color], alpha=0.6, edgecolors='black')
 
-            # Dibuja la flecha de dirección
-            dx, dy = np.cos(angulo) * 0.2, np.sin(angulo) * 0.2
-            plt.arrow(x, y, dx, dy, head_width=0.1, head_length=0.1, fc='red', ec='black')
-
     # Presas
     if presas:
         maxfitnessP = max([p[8] for p in presas], default=1)
@@ -689,21 +685,17 @@ def dibujarcaza(depredadores, presas, generacion, tiempo):
             color = (0, 1, 0)  # Verde para presas
             plt.scatter(x, y, s=tamano, c=[color], alpha=0.6, edgecolors='black', marker='o')
 
-            # Flecha de dirección
-            dx, dy = np.cos(angulo) * 0.2, np.sin(angulo) * 0.2
-            plt.arrow(x, y, dx, dy, head_width=0.1, head_length=0.1, fc='green', ec='black')
-
     # Configuración del entorno
     ax.set_aspect('equal')
     ax.set_xticks([])
     ax.set_yticks([])
 
     # Información en el gráfico
-    plt.figtext(0.025, 0.95, 'COMIENDO', fontsize=12, fontweight='bold')
-    plt.figtext(0.025, 0.90, f'GENERACION: {generacion}')
-    plt.figtext(0.025, 0.85, f'TIEMPO: {tiempo}')
-    plt.figtext(0.025, 0.80, f'Depredadores: {len(depredadores)}')
-    plt.figtext(0.025, 0.75, f'Presas: {len(presas)}')
+    plt.figtext(0.025, 0.95, 'HUNTING', fontsize=12, fontweight='bold')
+    plt.figtext(0.025, 0.90, f'GENERATION: {generacion}')
+    plt.figtext(0.025, 0.85, f'TIME: {tiempo}')
+    plt.figtext(0.025, 0.80, f'Depredator: {len(depredadores)}')
+    plt.figtext(0.025, 0.75, f'Prey: {len(presas)}')
 
     # Guardar imagen
     plt.savefig(f"{generacion}-{tiempo}.png", dpi=100)
@@ -721,34 +713,34 @@ def dibujarreproduccion(depredadores, presas, depredadoreshijos, presashijos, ge
     for depredador in depredadores:
         x, y, angulo = depredador[1], depredador[2], depredador[3]
         plt.scatter(x, y, s=50, c='red', edgecolors='black', alpha=0.6)
-        plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='red', ec='black')
+        #plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='red', ec='black')
     
     # Dibujar presas
     for presa in presas:
         x, y, angulo = presa[1], presa[2], presa[3]
         plt.scatter(x, y, s=30, c='green', edgecolors='black', alpha=0.6)
-        plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='green', ec='black')
+        #plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='green', ec='black')
     
     # Dibujar nuevos depredadores (hijos)
     for hijo in depredadoreshijos:
         x, y, angulo = hijo[1], hijo[2], hijo[3]
         plt.scatter(x, y, s=50, c='darkred', edgecolors='black', alpha=0.6)
-        plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='darkred', ec='black')
+        #plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='darkred', ec='black')
     
     # Dibujar nuevas presas (hijos)
     for hijo in presashijos:
         x, y, angulo = hijo[1], hijo[2], hijo[3]
         plt.scatter(x, y, s=30, c='darkgreen', edgecolors='black', alpha=0.6)
-        plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='darkgreen', ec='black')
+        #plt.arrow(x, y, np.cos(angulo) * 0.2, np.sin(angulo) * 0.2, head_width=0.1, fc='darkgreen', ec='black')
     
     # Información en el gráfico
-    plt.figtext(0.025, 0.95, 'REPRODUCCIÓN', fontsize=12, fontweight='bold')
-    plt.figtext(0.025, 0.90, f'GENERACION: {generacion}')
-    plt.figtext(0.025, 0.85, f'TIEMPO: {tiempo}')
-    plt.figtext(0.025, 0.80, f'Depredadores: {len(depredadores)}')
-    plt.figtext(0.025, 0.75, f'Presas: {len(presas)}')
-    plt.figtext(0.025, 0.70, f'Nuevos depredadores: {len(depredadoreshijos)}')
-    plt.figtext(0.025, 0.65, f'Nuevas presas: {len(presashijos)}')
+    plt.figtext(0.025, 0.95, 'REPRODUCTION', fontsize=12, fontweight='bold')
+    plt.figtext(0.025, 0.90, f'GENERATION: {generacion}')
+    plt.figtext(0.025, 0.85, f'TIME: {tiempo}')
+    plt.figtext(0.025, 0.80, f'Predators: {len(depredadores)}')
+    plt.figtext(0.025, 0.75, f'Preys: {len(presas)}')
+    plt.figtext(0.025, 0.70, f'New predators: {len(depredadoreshijos)}')
+    plt.figtext(0.025, 0.65, f'New preys: {len(presashijos)}')
     
     # Guardar imagen
     plt.savefig(f"reproduccion_{generacion}-{tiempo}.png", dpi=100)
@@ -822,7 +814,7 @@ def graficarevolucion(resumengenD, resumengenP, etiqueta):
     for P, (pre, data) in enumerate(pres.items()):
         plt.plot(data['generaciones'], data['valores'], color=next(presa_color), marker=markers[P % len(markers)], linestyle='solid')
 
-    plt.xlabel('Generación')
+    plt.xlabel('Generation')
     plt.ylabel(etiqueta.capitalize())
     plt.grid(True)
     plt.show()
@@ -835,28 +827,23 @@ def graficar_generacion(generaciones, datos, etiqueta_x, etiqueta_y, titulo):
     plt.title(titulo)
     plt.grid(True)
     plt.show()
-    
-def animacion():
-    # lista de archivos PNG en la carpeta actual  
-    archivos_png = [archivo for archivo in os.listdir() if archivo.endswith('.png')]
-    archivos_png.sort()  # Ordenar los archivos en orden alfanumérico
 
-    imagenes = []
-    for archivo in archivos_png:
-        imagen = imageio.imread(archivo)
-        imagenes.append(imagen)
+def animacion():
+    # Lista de archivos PNG en la carpeta actual  
+    archivos_png = sorted([archivo for archivo in os.listdir() if archivo.endswith('.png')])
+
+    imagenes = [imageio.imread(archivo) for archivo in archivos_png]
 
     # Guardar la animación en formato GIF    
     imageio.mimsave('animacion.gif', imagenes, duration=0.2)
-    imageio.imread('animacion.gif',imagenes,duration=0.2)
-    
-    return 'animacion.gif' #que se guarda en la carpeta
+
+    return 'animacion.gif'
 
 # VALORES INICIALES
     
-numeroD = 100   # NUMERO DE depredadores
-reglatrofica = 4  # regla trofica: num presas para alimentar a un depredador
-generaciones = 1100  # NUMERO DE GENERACIONES
+numeroD = 20   # NUMERO DE depredadores
+reglatrofica = 2  # regla trofica: num presas para alimentar a un depredador
+generaciones = 1111  # NUMERO DE GENERACIONES
 
 # PADRES REPRODUCTORES, presas QUE CALIFICAN LIKES
 padresD = 0.2         # PORCIÓN MINIMA DE padresD
@@ -888,10 +875,10 @@ velocidadP = 4        # VELOCIDAD    (unidades por segundo)
 
 # ENTORNO, ECOSISTEMA, ESTANTERIA, URNA,...
 
-x_min = -10.0        # borde izquierdo
-x_max = 10.0         # borde derecho
-y_min = -10.0        # borde inferior
-y_max = 10.0         # borde superior
+x_min = -2.0        # borde izquierdo
+x_max = 2.0         # borde derecho
+y_min = -2.0        # borde inferior
+y_max = 2.0         # borde superior
 
 # RED NEURONAL DE LOS depredadores, presas,... 
 
@@ -925,7 +912,7 @@ evolucionpoblaciones = []
 resumengenD = [] # depredadores en cada generacion
 resumengenP = [] # presas en cada generacion
 
-folder_path = "resultados100"   # aqui se guardaran las generaciones
+folder_path = "resultados30"   # aqui se guardaran las generaciones
 ultima_generacion_completada = obtener_ultima_generacion(folder_path) # el numero de generacion mayor guardado
 if ultima_generacion_completada > 0:
     depredadores, presas, evolucionpoblaciones, resumengenD, resumengenP = cargar_listas_generacion(ultima_generacion_completada, folder_path)
@@ -936,8 +923,8 @@ else:
 for generacion in range(ultima_generacion_completada + 1, generaciones):
 # en realidad la vida de la generacion es x3, pues 1/3 a juegos, 1/3 a caza y 1/3 a reproduccion
     # inicializamos las variables:
-    criasinviables = 0   # productos comprados, likes obtenidos, citas de papers
-    presasenfermas = 0   # productos que se han pasado la caducidad, devoluciones,...
+    criasinviables = 0   
+    presasenfermas = 0   
     devoradasP = []  # presas muertas devoradas 
     cachorrosinviables = 0 # mortalidad infantil
     depredadoresenfermos = 0 # depredadores flojos que mejor se descarten como reproductores
@@ -1123,6 +1110,8 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
                         NPD = distanciaPD[PDmin] # solamente sirve para inicializar
                         # angulo de huida 
                         alfaP = radians(atan2((presas[criaP][2]-presas[PDmin][2]), (presas[criaP][1]-presas[PDmin][1]))) - (presas[criaP][3] - presas[PDmin][3])
+                        # angulo de persecucion
+                        alfaD = - alfaP
                         # las crias pueden ser mas y para compensar que aprendan mas que los depredadores... 
                         amistadP = int(amistad/reglatrofica)
                         if amistadP < 1: amistadP = 1
@@ -1137,7 +1126,7 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
                                             posicion_AD = presas[PDmin][13].index(i)
                                             prioridadD = (posicion_AD + 1) / lenap + 1
                                             
-                                            # para dar mas importancia por ejemplo al precio que al tamaño de la pantalla, 
+                                            # para dar mas importancia por ejemplo a los cuernos que a las pezuñas, 
                                             # introducimos la variabilidad segun su prioridad en los atributos heredados
                                             VP = np.random.normal(1,prioridadP)
                                             VAP = presas[criaP][i] * VP # valor del atributo que se oferta
@@ -1147,7 +1136,7 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
                                             elif VAP >= 1:
                                                 VAP = 0.99
                         
-                                            # si criaP juega a precio y PDmin a calidad, cada uno tendrá una variabilidad segun su prioridad
+                                            # si criaP juega a empujar y PDmin a morder, cada uno tendrá una variabilidad segun su prioridad
                                             # se encontraran con menos probabilidad que si ambos juegan al mismo rollo
                                             VD = np.random.normal(1,prioridadD)
                                             VAD = presas[PDmin][i] * VD # valor del atributo que se demanda
@@ -1167,7 +1156,7 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
                                             
                                             carreraD = presas[PDmin][4]*VAD + np.random.normal(0,presas[PDmin][4]*prioridadD)
                                             if carreraD < 0: carreraD = 0
-                                            alphaD = alfaP + np.random.normal(0,(1-VAD)*prioridadD)
+                                            alphaD = alfaD + np.random.normal(0,(1-VAD)*prioridadD)
                                             while alphaD > np.pi * 2:
                                                 alphaD = alphaD - np.pi * 2 
                                             while alphaD < -np.pi * 2:
@@ -1552,7 +1541,7 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
                 presa[40] = None
             
         # GRAFICO (llama a la funcion dibujar) PARA CADA PASO DE CADA GENERACION 
-        dibujarcaza(depredadores,presas,generacion,tiempo)    # devuelve grafico png
+        #dibujarcaza(depredadores,presas,generacion,tiempo)    # devuelve grafico png
     
     print('carroña', carrona, 'caza', cazza, 'escapan', nocaza, 'persecuciones', persecucion)
     print('antes de evaluarlos, quedan', len(depredadores), 'depredadores y', len(presas), 'presas')
@@ -1817,8 +1806,8 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
                         alphaP = alfa * np.pi / 180
                         while alphaP > np.pi * 2:
                             alphaP=alphaP - np.pi * 2 # si hay mas de una vuelta de mas 
-                        while alphaD < -np.pi * 2:
-                            alphaD=alphaD + np.pi * 2 # si es al reves, tambien
+                        while alphaP < -np.pi * 2:
+                            alphaP=alphaP + np.pi * 2 # si es al reves, tambien
                         
                         # enfilada la proxima presa, va a por ella
                         presas[padreP][1]=presas[padreP][1] + presas[padreP][4] * cos(radians(alphaP))
@@ -2060,7 +2049,7 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
             controlfronteraP(presa)
                 
         # GRAFICO (llama a la funcion dibujar) PARA CADA PASO  
-        dibujarreproduccion(depredadores,depredadoreshijos,presas,presashijos,generacion,tiempo)
+        #dibujarreproduccion(depredadores,depredadoreshijos,presas,presashijos,generacion,tiempo)
                  # devuelve grafico png
                  
     # de las presas y depredadores que han tomado alguna decision (las habrá que 
@@ -2084,11 +2073,11 @@ for generacion in range(ultima_generacion_completada + 1, generaciones):
         depredador[39] = [] # no necesitamos conservar cada uno de los tiempos de decision, sino su media              
         resumengenD.append(lista_a_diccionario([generacion, depredador[0], len(depredador[6]), depredador[8], depredador[7], depredador[9], len(depredador[13]), len(depredador[14]), depredador[15], depredador[17], depredador[22], depredador[23], depredador[24], depredador[25], depredador[26], depredador[27], depredador[28], depredador[29], depredador[30], depredador[31], depredador[32], depredador[33], depredador[34], depredador[35], depredador[36], depredador[37], depredador[38]]))
     
-    print('generacion',generacion)
-    print('depredadores',len(depredadores))
-    print('cachorros', len(depredadoreshijos))
-    print('presas',len(presas))
-    print('crias', len(presashijos))
+    print('generation',generacion)
+    print('predators',len(depredadores))
+    print('cubs', len(depredadoreshijos))
+    print('preys',len(presas))
+    print('offspring', len(presashijos))
 
     #seguimos dentro de una generacion: adultos   
     evolucionpoblaciones.append([generacion,len(presas),criasinviables,numpresashijos,len(devoradasP),presasenfermas,len(depredadores),cachorrosinviables,numdepredadoreshijos,len(dep),depredadoresenfermos,carrona,cazza,nocaza,persecucion])
@@ -2167,22 +2156,22 @@ graficarevolucion(resumengenD,resumengenP,'tiempo_proceso')
 #'mejora_con_el_numero_de_intereses','empeora_con_el_numero_de_intereses']
 
 # otros por variables:    
-graficarevolucion(resumengenD,resumengenP,'mejora_con_el_tiempo')
-graficarevolucion(resumengenD,resumengenP,'empeora_con_el_tiempo')
-graficarevolucion(resumengenD,resumengenP,'mejora_con_el_ejercicio') 
-graficarevolucion(resumengenD,resumengenP,'empeora_con_el_ejercicio')
-graficarevolucion(resumengenD,resumengenP,'mejora_con_el_exito')    
-graficarevolucion(resumengenD,resumengenP,'empeora_con_el_exito')
-graficarevolucion(resumengenD,resumengenP,'mejora_con_la_alimentacion')
-graficarevolucion(resumengenD,resumengenP,'empeora_con_la_alimentacion')
-graficarevolucion(resumengenD,resumengenP,'mejora_con_la_edad_y_la_alimentacion') 
-graficarevolucion(resumengenD,resumengenP,'empeora_con_la edad_y_la_alimentacion')
-graficarevolucion(resumengenD,resumengenP,'mejora_con_la_edad_y_menos_alimentacion')    
-graficarevolucion(resumengenD,resumengenP,'empeora_con_la_edad_y_menos_alimentacion')
-graficarevolucion(resumengenD,resumengenP,'mejora_con_la_actividad_reproductora')
-graficarevolucion(resumengenD,resumengenP,'empeora_con_la_actividad_reproductora')
-graficarevolucion(resumengenD,resumengenP,'mejora_con_el_numero_de_intereses') 
-graficarevolucion(resumengenD,resumengenP,'empeora_con_el_numero_de_intereses')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_el_tiempo')
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_el_tiempo')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_el_ejercicio') 
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_el_ejercicio')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_el_exito')    
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_el_exito')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_la_alimentacion')
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_la_alimentacion')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_la_edad_y_la_alimentacion') 
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_la edad_y_la_alimentacion')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_la_edad_y_menos_alimentacion')    
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_la_edad_y_menos_alimentacion')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_la_actividad_reproductora')
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_la_actividad_reproductora')
+#graficarevolucion(resumengenD,resumengenP,'mejora_con_el_numero_de_intereses') 
+#graficarevolucion(resumengenD,resumengenP,'empeora_con_el_numero_de_intereses')
  
 pass
 
@@ -2192,4 +2181,4 @@ tiempototal= (tiempofinal - tiempoinicial)
 print('tiempo', tiempototal ,'para', len(generaciones) ,'generaciones y', numeroD ,'depredadores')
 
 # fichero animacion.gif que cuenta la historia
-animacion()
+#animacion()
